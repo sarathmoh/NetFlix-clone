@@ -1,5 +1,6 @@
+import Body from "./components/Body";
 function App() {
-  return <div className="text-3xl">hello</div>;
+  return <Body />;
 }
 
 export default App;
