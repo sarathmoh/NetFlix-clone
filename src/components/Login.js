@@ -1,15 +1,22 @@
 import React from "react";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
+import { addUser } from "../utils/userSlice";
 import { validation } from "../utils/validate";
+import { useDispatch } from "react-redux";
 import { useState, useRef } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 const Login = () => {
+  const navigate = useNavigate();
+  const dispath=useDispatch()
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState(null);
+  const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
   const loginCheckHandler = () => {
@@ -33,6 +40,29 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: "https://avatars.githubusercontent.com/u/102517734?v=4",
+          })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispath(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              // Profile updated!
+              navigate("/browse");
+              // ...
+            })
+            .catch((error) => {
+              // An error occurred
+              setError(error.message);
+              // ...
+            });
 
           // ...
         })
@@ -55,6 +85,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
+          navigate("/browse");
 
           // ...
         })
@@ -81,6 +112,7 @@ const Login = () => {
         </h1>
         {!isLogin && (
           <input
+            ref={name}
             type="text"
             placeholder="Enter your name"
             className="p-4  w-full my-5 bg-gray-900  rounded-lg"
