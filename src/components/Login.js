@@ -1,6 +1,5 @@
 import React from "react";
 import Header from "./Header";
-import { useNavigate } from "react-router-dom";
 import { addUser } from "../utils/userSlice";
 import { validation } from "../utils/validate";
 import { useDispatch } from "react-redux";
@@ -12,8 +11,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 const Login = () => {
-  const navigate = useNavigate();
-  const dispath=useDispatch()
+  const dispath = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState(null);
   const name = useRef(null);
@@ -55,7 +53,7 @@ const Login = () => {
                 })
               );
               // Profile updated!
-              navigate("/browse");
+
               // ...
             })
             .catch((error) => {
@@ -85,7 +83,6 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
-          navigate("/browse");
 
           // ...
         })
